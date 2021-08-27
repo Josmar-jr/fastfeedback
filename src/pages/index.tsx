@@ -3,7 +3,6 @@ import type { NextPage } from 'next';
 
 const Home: NextPage = () => {
   const { signOut, signInWithGithub, user } = useAuth();
-  console.log(user);
 
   return (
     <div>
