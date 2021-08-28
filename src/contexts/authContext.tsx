@@ -1,8 +1,10 @@
+import Router from 'next/router';
 import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createUser } from 'services/db';
 
 import { firebase, auth } from 'services/firebase';
 
-type User = {
+export type User = {
   uid: string;
   name: string;
   email: string;
@@ -34,6 +36,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
   function verifyUser(rawUser: any) {
     if (rawUser) {
       const user = formatUser(rawUser);
+      createUser(user.uid, user);
 
       setUser(user);
       return user;
@@ -51,6 +54,8 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
 
   async function signOut() {
     await auth.signOut();
+
+    Router.push('/');
   }
 
   return (
