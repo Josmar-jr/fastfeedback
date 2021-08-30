@@ -11,4 +11,8 @@ const firebaseConfig = {
 if (!admin.apps.length) {
   admin.initializeApp(firebaseConfig);
 }
-export default admin.firestore();
+
+const database = admin.firestore();
+const auth = admin.auth();
+
+export { auth, database };

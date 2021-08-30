@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
+import Link from 'next/link';
 
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-import { Box, Link } from '@chakra-ui/react';
+import { Box, Link as LinkChakra } from '@chakra-ui/react';
 import { Table, Tr, Th, Td } from './Table';
 import { SiteData } from 'pages/dashboard';
 
@@ -35,7 +36,9 @@ export const SiteTable = ({ sites }: SiteData) => {
             <Td fontWeight="medium">{site.name}</Td>
             <Td>{site.url}</Td>
             <Td>
-              <Link>View Feedback</Link>
+              <Link href="/feedback/[siteId]" as={`/feedback/${site.id}`}>
+                <LinkChakra>View Feedback</LinkChakra>
+              </Link>
             </Td>
             <Td>{site.createdAt}</Td>
           </Box>

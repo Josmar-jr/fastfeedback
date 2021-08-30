@@ -43,7 +43,6 @@ type AddSiteModalProps = {
 
 export function AddSiteModal({ children }: AddSiteModalProps) {
   const { user } = useAuth();
-
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
   const { mutate } = useFetch<SiteData>('sites');
@@ -62,7 +61,6 @@ export function AddSiteModal({ children }: AddSiteModalProps) {
     reset();
 
     mutate(async (data: any) => {
-      console.log(data);
       return { sites: [...data.sites, newSite] };
     }, false);
 

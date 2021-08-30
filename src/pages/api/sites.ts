@@ -1,13 +1,17 @@
+import { auth } from 'services/admin/firebase';
 import { NextApiRequest, NextApiResponse } from 'next';
-import db from 'services/firebase-admin';
+import { getUserSites } from 'services/admin/db';
+import { parseCookies } from 'nookies';
 
-export default async (_: NextApiRequest, res: NextApiResponse) => {
-  const snapshot = await db.collection('sites').get();
-  let sites: object[] = [];
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const { ['fastFeedback.token']: token } = parseCookies({ req });
+  const { uid } = await auth.verifyIdToken(token);
 
-  snapshot.forEach((doc) => {
-    sites.push({ id: doc.id, ...doc.data() });
-  });
+  const { sites, error } = await getUserSites(uid);
+
+  if (error) {
+    return res.status(500).json({ error });
+  }
 
   return res.status(200).json({ sites });
 };

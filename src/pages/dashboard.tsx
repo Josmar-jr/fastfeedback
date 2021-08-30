@@ -8,6 +8,7 @@ import { DashboardTemplate } from 'templates/Dashboard';
 import { SiteTableSkeleton } from 'components/SiteTable/Skeleton';
 import { EmptyState } from 'components/EmptyState';
 import { SiteTable } from 'components/SiteTable';
+import { parseCookies } from 'nookies';
 
 type Data = {
   id: string;
@@ -23,6 +24,9 @@ export interface SiteData {
 }
 
 const Dashboard: NextPage = () => {
+  const { user } = useAuth();
+  // const { data } = useFetch<SiteData>('sites', user?.token);
+
   const { data } = useFetch<SiteData>('sites');
 
   if (!data) {
@@ -34,9 +38,11 @@ const Dashboard: NextPage = () => {
   }
 
   return (
-    <DashboardTemplate>
-      {data?.sites ? <SiteTable sites={data.sites} /> : <EmptyState />}
-    </DashboardTemplate>
+    <>
+      <DashboardTemplate>
+        {data?.sites ? <SiteTable sites={data.sites} /> : <EmptyState />}
+      </DashboardTemplate>
+    </>
   );
 };
 

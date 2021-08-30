@@ -3,11 +3,14 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 import { createUser } from 'services/db';
 
 import { firebase, auth } from 'services/firebase';
+import { destroyCookie, setCookie } from 'nookies';
+import api from 'services/api';
 
 export type User = {
   uid: string;
   name: string;
   email: string;
+  token: string;
   provider: string;
   photoUrl: string;
 };
@@ -36,10 +39,17 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
   function verifyUser(rawUser: any) {
     if (rawUser) {
       const user = formatUser(rawUser);
-      createUser(user.uid, user);
+      const { token, ...userWithoutToken } = user;
+
+      createUser(user.uid, userWithoutToken);
+
+      setCookie(undefined, 'fastFeedback.token', token, {});
+      api.defaults.headers['Authorization'] = `Bearer ${token}`;
 
       setUser(user);
       return user;
+    } else {
+      signOut();
     }
   }
 
@@ -47,6 +57,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
     const provider = new firebase.auth.GithubAuthProvider();
 
     const result = await auth.signInWithPopup(provider);
+
     const { user: newUser } = result;
 
     verifyUser(newUser);
@@ -54,6 +65,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
 
   async function signOut() {
     await auth.signOut();
+    destroyCookie(undefined, 'fastFeedback.token');
 
     Router.push('/');
   }
@@ -69,6 +81,7 @@ const formatUser = (user: any): User => {
   return {
     uid: user?.uid,
     email: user?.email,
+    token: user?._lat,
     name: user?.displayName,
     provider: user?.providerData[0].providerId,
     photoUrl: user?.photoURL,
