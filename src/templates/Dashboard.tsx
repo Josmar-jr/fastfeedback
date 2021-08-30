@@ -6,11 +6,16 @@ import {
   Flex,
   Heading,
 } from '@chakra-ui/react';
-import { EmptyState } from 'components/EmptyState';
+
 import { Layout } from 'components/Layout';
 import { AddSiteModal } from 'components/Modals';
+import { ReactNode } from 'react';
 
-export function DashboardTemplate() {
+type DashboardTemplateProps = {
+  children: ReactNode;
+};
+
+export function DashboardTemplate({ children }: DashboardTemplateProps) {
   return (
     <Layout>
       <Flex
@@ -31,8 +36,7 @@ export function DashboardTemplate() {
           <Heading mb={8}>My Sites</Heading>
           <AddSiteModal>+ Add Site</AddSiteModal>
         </Flex>
-        {/* {children} */}
-        <EmptyState />
+        {children}
       </Flex>
     </Layout>
   );
