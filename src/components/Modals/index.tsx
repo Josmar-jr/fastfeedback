@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { mutate } from 'swr';
 
 import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
@@ -20,8 +21,10 @@ import {
   ModalOverlay,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useFetch } from 'hooks/useFetch';
+import { SiteData } from 'pages/dashboard';
 
-export type RegisterDataTypes = {
+export type RegisterSiteDataTypes = {
   authorId: string | undefined;
   author: string | undefined;
   createdAt: string;
@@ -43,6 +46,7 @@ export function AddSiteModal({ children }: AddSiteModalProps) {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { register, handleSubmit, reset } = useForm();
+  const { mutate } = useFetch<SiteData>('sites');
 
   function onRegisterNewSite({ name, url }: FormInputType) {
     const newSite = {
@@ -56,6 +60,12 @@ export function AddSiteModal({ children }: AddSiteModalProps) {
     registerNewSite(newSite);
     toast.success('Successfully toasted!');
     reset();
+
+    mutate(async (data: any) => {
+      console.log(data);
+      return { sites: [...data.sites, newSite] };
+    }, false);
+
     onClose();
   }
 

@@ -1,4 +1,4 @@
-import { RegisterDataTypes } from 'components/Modals';
+import { RegisterSiteDataTypes } from 'components/Modals';
 import { User } from 'contexts/authContext';
 import { firestore } from './firebase';
 
@@ -9,6 +9,6 @@ export function createUser(uid: string, data: User) {
     .set({ ...data }, { merge: true });
 }
 
-export function registerNewSite(data: RegisterDataTypes) {
+export function registerNewSite(data: RegisterSiteDataTypes) {
   return firestore.collection('sites').add(data);
 }
